@@ -34,7 +34,7 @@ QA-Engineer-Take-Home/
 - **Realistic Failures:** Includes random transient failures (10% chance) to simulate real-world conditions
 
 ### 3. Test Suite (`test_price.py`)
-- **95+ Test Cases** covering:
+- **Test Cases** covering:
   - ✅ Happy path scenarios
   - ✅ Permanent failures (no retry)
   - ✅ Transient failures (with retry)
