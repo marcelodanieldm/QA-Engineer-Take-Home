@@ -1,8 +1,13 @@
 # QA Engineer Take-Home: Stock Price API Client
 
+**Candidate:** Marcelo Daniel Lucero  
+**Position:** QA Engineer
+
 ## Overview
 
 This project implements a robust stock price API client with comprehensive error handling, retry logic, and a full test suite. The solution demonstrates best practices in QA engineering, including proper distinction between permanent and transient failures, realistic API simulation, and thorough test coverage.
+
+This challenge was completed as part of the QA Engineer position application process.
 
 ## Project Structure
 
