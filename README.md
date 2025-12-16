@@ -267,18 +267,30 @@ This is a take-home assignment, but feedback is welcome! Key areas for improveme
 - Performance optimizations
 - More realistic API simulations
 
-  Reasoning and High Signal Checkpoints
+ ## Reasoning and High Signal Checkpoints
+  
 Distinguishing Failure Severities
+
 The choice between Critical (Block Trading) and Low (Log and Continue) is based on the concept of trustworthiness of data and immediacy of risk.
-Critical: Used when the system cannot trust the data source or the data itself, which directly impacts the accuracy of a financial operation (e.g., rebalance) or prevents it from running.
-Examples: Persistent 500 error (price unknown), Negative Price (price corrupted), Missing Data Field (data contract violated). Operations MUST halt.
-High: Used for issues that indicate a serious external operational problem but don't necessarily compromise the integrity of the data if we had it. The chosen response is a fail-safe and alert mechanism.
+
+- Critical: Used when the system cannot trust the data source or the data itself, which directly impacts the accuracy of a financial operation (e.g., rebalance) or prevents it from running.
+- Examples: Persistent 500 error (price unknown), Negative Price (price corrupted), Missing Data Field (data contract violated). Operations MUST halt.
+  
+- High: Used for issues that indicate a serious external operational problem but don't necessarily compromise the integrity of the data if we had it.
+The chosen response is a fail-safe and alert mechanism.
 Example: 429 Rate Limit. We know the API works, but we are externally blocked. The fail-fast approach stops the current job and signals the operational team, preventing further throttling, which is safer than acting on old data.
-Low: Used for transient, expected failures that are handled by built-in resilience (retries). These are logged but do not disrupt the overall flow.
+
+- Low: Used for transient, expected failures that are handled by built-in resilience (retries). These are logged but do not disrupt the overall flow.
 Realistic API Failure Patterns
-The testing philosophy extends beyond simple one-off checks:
-Transient vs. Persistent Failure: We explicitly test the retry logic for 5xx errors. Most API outages are short-lived. A successful retry allows logging the event without blocking crucial fund operations. Only a failure after exhausting the retry mechanism is treated as catastrophic.
-API Contract Violations: A functioning API (200 OK) that sends bad data (negative price, null price) is arguably more dangerous than a down API, as it could lead to silent errors or nonsensical calculations. We treat these as Critical to enforce a zero-tolerance policy for data integrity.
+
+## The testing philosophy extends beyond simple one-off checks:
+
+Transient vs. Persistent Failure: We explicitly test the retry logic for 5xx errors. Most API outages are short-lived.
+A successful retry allows logging the event without blocking crucial fund operations.
+Only a failure after exhausting the retry mechanism is treated as catastrophic.
+
+API Contract Violations: A functioning API (200 OK) that sends bad data (negative price, null price) is arguably more dangerous than a down API, as it could lead to silent errors or nonsensical calculations. 
+
 Throttling Behavior: Instead of always waiting on Retry-After, we chose a fail-fast strategy. This acknowledges that in high-frequency/financial operations, a long delay is often a tactical failure. By raising RateLimitError, the calling system (e.g., the Rebalance Orchestrator) can immediately switch to a backup price source or gracefully shut down that specific rebalance, which is a safer, non-blocking decision.
 
 ## License
