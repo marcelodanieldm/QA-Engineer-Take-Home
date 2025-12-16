@@ -13,14 +13,57 @@ This challenge was completed as part of the QA Engineer position application pro
 
 ```
 QA-Engineer-Take-Home/
-├── exceptions.py          # Custom exception hierarchy
-├── price_client.py        # Mock API and client implementation
-├── test_price.py          # Comprehensive Pytest suite
-├── Test_Plan.md          # Detailed test plan and strategy
-└── README.md             # This file
+├── .github/
+│   ├── workflows/
+│   │   └── test.yml              # GitHub Actions CI/CD pipeline
+│   ├── scripts/
+│   │   └── quality_gate.py       # Severity-based quality gate script
+│   └── CI_CD_GUIDE.md           # Detailed CI/CD documentation
+├── exceptions.py                 # Custom exception hierarchy
+├── price_client.py               # API client with retry logic
+├── test_price.py                 # Comprehensive Pytest suite
+├── Test_Plan.md                 # Detailed test plan and strategy
+└── README.md                    # This file
 ```
 
 ## Key Features
+
+### 1. CI/CD Pipeline with Quality Gates (`.github/`)
+- **GitHub Actions Workflow:** Automated testing on every push/PR
+- **Severity-Based Quality Gates:** 
+  - Critical/High failures → Block PR merge
+  - Low failures → Allow merge with warnings
+- **Automated PR Comments:** Test summaries posted to pull requests
+- **JUnit XML Reporting:** Structured test results for analysis
+- See [CI/CD Guide](.github/CI_CD_GUIDE.md) for detailed documentation
+
+### 2. Exception Hierarchy (`exceptions.py`)
+- **Base Exception:** `PriceFetchError`
+- **Critical Errors:** `PriceCriticalError` (API down, bad data)
+- **Rate Limit Errors:** `RateLimitError` (fail-fast behavior)
+
+### 3. Price Client (`price_client.py`)
+- **Hyperliquid API Integration:** Fetches crypto prices with retry logic
+- **Smart Retry Logic:** Automatically retries transient errors (500 errors, timeouts, network issues)
+- **Exponential Backoff:** 0.5s, 1s, 2s retry delays
+- **Fail-Fast Rate Limiting:** Immediate failure on 429 errors
+- **Data Validation:** Checks for null, negative, and malformed prices
+
+### 4. Test Suite (`test_price.py`)
+- **8 Test Cases** (with parametrization) covering:
+  - ✅ Happy path scenarios (200 OK responses)
+  - ✅ Server errors with retry (500, 502, 503, 504)
+  - ✅ Bad data handling (negative, null, missing fields)
+  - ✅ Rate limiting (429 with/without Retry-After header)
+  - ✅ Severity categorization for quality gates
+
+## Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip
+
+### Setup
 
 ### 1. Exception Hierarchy (`exceptions.py`)
 - **Base Exception:** `PriceClientException`
@@ -96,6 +139,16 @@ pytest test_price.py::TestEdgeCases -v
 ### Run with Coverage
 ```bash
 pytest test_price.py --cov=price_client --cov=exceptions --cov-report=html
+```
+
+### Run with JUnit XML (for CI)
+```bash
+pytest test_price.py -v --junit-xml=test-results.xml
+```
+
+### Test Quality Gate Script
+```bash
+python .github/scripts/quality_gate.py test-results.xml
 ```
 
 ### Expected Output
