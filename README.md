@@ -77,7 +77,7 @@ QA-Engineer-Take-Home/
 - **Realistic Failures:** Includes random transient failures (10% chance) to simulate real-world conditions
 
 ### 3. Test Suite (`test_price.py`)
-- **95+ Test Cases** covering:
+- **Test Cases** covering:
   - ✅ Happy path scenarios
   - ✅ Permanent failures (no retry)
   - ✅ Transient failures (with retry)
@@ -329,14 +329,3 @@ This project is for demonstration purposes as part of a QA Engineer assessment.
 For questions about this implementation, please reach out through the appropriate channels.
 
 ---
-
-## Summary
-
-This solution demonstrates:
-✅ **Strong QA fundamentals** - Comprehensive test coverage
-✅ **Critical thinking** - Proper failure categorization
-✅ **Real-world awareness** - Realistic API patterns
-✅ **Clean code** - Well-organized, documented, maintainable
-✅ **Production-ready** - Handles edge cases and errors gracefully
-
-The key insight: **Not all failures are equal.** Distinguishing between permanent and transient failures enables smart retry logic that improves reliability without wasting resources.
