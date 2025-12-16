@@ -1,41 +1,16 @@
 """Custom exceptions for the price client."""
 
 
-class PriceClientException(Exception):
-    """Base exception for all price client errors."""
+class PriceFetchError(Exception):
+    """Base exception for all price fetching failures."""
     pass
 
 
-class TransientError(PriceClientException):
-    """Transient errors that may resolve with retries (e.g., timeouts, rate limits)."""
+class PriceCriticalError(PriceFetchError):
+    """Raised for errors requiring an immediate halt (e.g., bad data, API down after retries)."""
     pass
 
 
-class PermanentError(PriceClientException):
-    """Permanent errors that won't resolve with retries (e.g., invalid API key, not found)."""
-    pass
-
-
-class NetworkError(TransientError):
-    """Network-related errors (timeouts, connection failures)."""
-    pass
-
-
-class RateLimitError(TransientError):
-    """API rate limit exceeded."""
-    pass
-
-
-class AuthenticationError(PermanentError):
-    """Invalid API key or authentication failure."""
-    pass
-
-
-class NotFoundError(PermanentError):
-    """Resource not found (e.g., invalid ticker symbol)."""
-    pass
-
-
-class ValidationError(PermanentError):
-    """Invalid input parameters."""
+class RateLimitError(PriceFetchError):
+    """Raised when rate limit is hit and a fast-fail is chosen."""
     pass
